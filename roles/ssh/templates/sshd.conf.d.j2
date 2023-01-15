@@ -1,0 +1,25 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "true"
+# {{ ansible_managed }}
+# OpenSSH server system-wide configuration snippet.
+# See sshd_config(5) for details.
+
+{% if item.description is defined and item.description | length %}
+# {{ item.description }}
+{% endif %}
+
+{% for key, value in item.options.items() %}
+{% if value is iterable and (value is not string) %}
+{% if value is not mapping %}
+{% for subvalue in value %}
+{{ key }} {{ subvalue }}
+{% endfor %}
+{% elif value is mapping and key == 'Match' %}
+Match {{ value['rule'] }}
+  {% for rule_name, rule_value in value['options'].items() %}
+    {{ rule_name | indent(4) }} {{ rule_value }}
+  {% endfor %}
+{% endif %}
+{% else %}
+{{ key }} {{ value }}
+{% endif %}
+{% endfor %}

@@ -1,0 +1,16 @@
+---
+- name: Create sshd_config.d directory
+  ansible.builtin.file:
+    path: /etc/ssh/sshd_config.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Create ssh_config.d directory
+  ansible.builtin.file:
+    path: /etc/ssh/ssh_config.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'

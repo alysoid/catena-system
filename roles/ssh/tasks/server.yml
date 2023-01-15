@@ -1,0 +1,28 @@
+---
+- name: Generate /etc/ssh/revoked_keys file
+  ansible.builtin.template:
+    src: revoked_keys.j2
+    dest: /etc/ssh/revoked_keys
+    owner: root
+    group: root
+    mode: '0600'
+  notify: Restart sshd
+
+- name: Generate /etc/ssh/ssh_config file
+  ansible.builtin.template:
+    src: sshd.conf.j2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: '0600'
+  notify: Restart sshd
+
+- name: Generate server configuration files
+  ansible.builtin.template:
+    src: sshd.conf.d.j2
+    dest: '/etc/ssh/sshd_config.d/{{ item.name }}.conf'
+    owner: root
+    group: root
+    mode: '0600'
+  loop: '{{ catena_ssh_server }}'
+  notify: Restart sshd

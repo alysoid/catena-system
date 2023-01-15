@@ -1,0 +1,69 @@
+---
+#
+# ssh_config — OpenSSH client configuration file
+# https://man.archlinux.org/man/ssh_config.5.en
+#
+
+# List of snippet configuration files
+catena_ssh_client:
+  - '{{ catena_ssh_client_basic }}'
+  - '{{ catena_ssh_client_security }}'
+  - '{{ catena_ssh_client_misc }}'
+
+#
+# Basic configuration
+#
+catena_ssh_client_basic:
+  name: 10-Basic
+  description: Basic configuration
+  options:
+    # Default TCP port for connections
+    Port: '{{ catena_ssh_client_port }}'
+    # Address family should be limited to the active network configuration.
+    AddressFamily: '{{ catena_ssh_address_family }}'
+    # https://man.archlinux.org/man/ssh_config.5.en#PATTERNS
+    # Host:
+    #   - names: ["domain.com"]
+    #     options: ["StrictHostKeyChecking no"]
+
+#
+# Security configuration
+#
+catena_ssh_client_security:
+  name: 20-Security
+  description: Security configuration
+  options:
+    # Make sure passphrase querying is enabled.
+    BatchMode: 'no'
+    # Prevent IP spoofing checking host IP against `known_hosts` file.
+    CheckHostIP: 'yes'
+    # Always ask before adding keys to `known_hosts` file.
+    StrictHostKeyChecking: ask
+    # Disable agent forwarding, since local agent could be accessed through forwarded connection.
+    ForwardAgent: 'no'
+    # Disable X11 forwarding, since local X11 display could be accessed through forwarded connection.
+    ForwardX11: 'no'
+    # Never use host-based authentication. It can be exploited.
+    HostbasedAuthentication: 'no'
+    # Disable password-based authentication, it can allow for potentially easier brute-force attacks.
+    PasswordAuthentication: 'no'
+    # Disable tunneling
+    Tunnel: 'no'
+    # Disable local command execution.
+    PermitLocalCommand: 'no'
+    # Use strong defaults
+    Ciphers: "{{ catena_ssh_ciphers | join(',') }}"
+    MACs: "{{ catena_ssh_macs | join(',') }}"
+    KexAlgorithms: "{{ catena_ssh_kex | join(',') }}"
+    # Hostkey algorithms to use in order of preference.
+    HostKeyAlgorithms: "{{ catena_ssh_host_key_algorithms | join(',') }}"
+
+#
+# Misc configuration
+#
+catena_ssh_client_misc:
+  name: 30-Misc
+  description: Misc configuration
+  options:
+    # Specifies if client requests compression
+    Compression: 'no'

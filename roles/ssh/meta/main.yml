@@ -1,0 +1,20 @@
+---
+galaxy_info:
+  author: Andrea Brandi
+  description: Secured and hardened OpenSSH client and server (sshd)
+  license: MIT
+
+  min_ansible_version: '2.10'
+
+  platforms:
+    - name: ArchLinux
+      versions:
+        - all
+
+  galaxy_tags:
+    - system
+    - openssh
+    - sshd
+    - ssh
+
+dependencies: []

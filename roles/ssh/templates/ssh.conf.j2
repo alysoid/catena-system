@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+# OpenSSH client system-wide configuration file.
+# See ssh_config(5) for details.
+
+# Configuration data is parsed as follows:
+#  1. command line options
+#  2. user-specific file
+#  3. system-wide file
+# Any configuration value is only changed the first time it is set.
+# Thus, host-specific definitions should be at the beginning of the
+# configuration file, and defaults at the end.
+
+#
+# Include configuration snippets
+#
+
+Include /etc/ssh/ssh_config.d/*.conf

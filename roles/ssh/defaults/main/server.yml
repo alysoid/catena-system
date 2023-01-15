@@ -1,0 +1,175 @@
+---
+#
+# sshd_config — OpenSSH daemon configuration file
+# https://man.archlinux.org/man/sshd_config.5.en
+#
+
+# List of snippet configuration files
+catena_ssh_server:
+  - '{{ catena_ssh_server_basic }}'
+  - '{{ catena_ssh_server_security }}'
+  - '{{ catena_ssh_server_security_crypto }}'
+  - '{{ catena_ssh_server_security_auth }}'
+  - '{{ catena_ssh_server_security_network }}'
+  - '{{ catena_ssh_server_userenv }}'
+  - '{{ catena_ssh_server_misc }}'
+  - '{{ catena_ssh_server_sftp }}'
+
+#
+# Basic configuration
+#
+catena_ssh_server_basic:
+  name: 10-Basic
+  description: Basic configuration
+  options:
+    # TCP port sshd should listen on
+    Port: '{{ catena_ssh_server_ports }}'
+    # Allow root login only using certificates
+    PermitRootLogin: 'prohibit-password'
+    # Enable both IPv4 and IPv6 addresses
+    AddressFamily: '{{ catena_ssh_address_family }}'
+    # Addresses sshd listens on
+    ListenAddress: ['0.0.0.0']
+    # List of file containing private host keys used by SSH
+    HostKey: '{{ catena_ssh_host_key_files }}'
+    # Host key algorithms that the server offers
+    HostKeyAlgorithms: "{{ catena_ssh_host_key_algorithms | join(',') }}"
+
+#
+# Security configuration
+#
+catena_ssh_server_security:
+  name: 20-Security
+  description: Security configuration
+  options:
+    # Check file modes and ownership before accepting logins
+    StrictModes: 'yes'
+    # Logging, obsoletes QuietMode and FascistLogging
+    SyslogFacility: AUTH
+    LogLevel: VERBOSE
+
+#
+# Security: Cryptography
+#
+catena_ssh_server_security_crypto:
+  name: 21-Cryptography
+  description: 'Security: Cryptography'
+  options:
+    Ciphers: "{{ catena_ssh_ciphers | join(',') }}"
+    MACs: "{{ catena_ssh_macs | join(',') }}"
+    KexAlgorithms: "{{ catena_ssh_kex | join(',') }}"
+
+#
+# Security: Authentication
+#
+catena_ssh_server_security_auth:
+  name: 22-Authentication
+  description: 'Security: Authentication'
+  options:
+    # Time allowed for successful authentication to the SSH server
+    LoginGraceTime: 30s
+    # Max number of authentication attempts permitted per connection
+    # Once the number of failures reaches half this value, additional failures are logged.
+    MaxAuthTries: 2
+    # Max number of open sessions permitted from a given connection
+    MaxSessions: 10
+    # Max number of concurrent unauthenticated connections to the SSH daemon
+    MaxStartups: '10:30:60'
+    # Enable public key authentication
+    PubkeyAuthentication: 'yes'
+    # Never use host-based authentication (exploitable)
+    IgnoreRhosts: 'yes'
+    IgnoreUserKnownHosts: 'yes'
+    HostbasedAuthentication: 'no'
+    # Enable PAM to enforce system wide rules
+    UsePAM: 'yes'
+    # Set default AuthenticationMethods to publickey
+    AuthenticationMethods: publickey
+    # Disable password-based authentication (brute-forceble)
+    PasswordAuthentication: 'no'
+    PermitEmptyPasswords: 'no'
+    ChallengeResponseAuthentication: 'no'
+    # Enable Kerberos authentication
+    KerberosAuthentication: 'no'
+    KerberosOrLocalPasswd: 'no'
+    KerberosTicketCleanup: 'yes'
+    # Enable GSSAPI authentication
+    GSSAPIAuthentication: 'no'
+    GSSAPICleanupCredentials: 'yes'
+
+#
+# Security: Network
+#
+catena_ssh_server_security_network:
+  name: 23-Network
+  description: 'Security: Network'
+  options:
+    # Disable TCP keep alive since it is spoofable.
+    # Use ClientAlive messages (use encrypted channel)
+    TCPKeepAlive: 'no'
+    # Manage `ClientAlive` signals with interval and max count.
+    ClientAliveInterval: 300
+    ClientAliveCountMax: 3
+    # Disable SSH Port Tunneling
+    PermitTunnel: 'no'
+    # Disable forwarding TCP connections
+    AllowTcpForwarding: 'no'
+    # Disable agent forwarding
+    # local agent could be accessed through forwarded connection
+    AllowAgentForwarding: 'no'
+    # Disable binding forwarded ports to non-loopback addresses
+    # `yes`: force binding on wildcard address
+    # `clientspecified`: allow the client to specify which address to bind to
+    GatewayPorts: 'no'
+    # Disable X11 forwarding
+    X11Forwarding: 'no'
+    X11UseLocalhost: 'yes'
+
+#
+# User environment configuration
+#
+catena_ssh_server_userenv:
+  name: 30-UserEnv
+  description: User environment configuration
+  options:
+    # Enabling environment processing may enable users to bypass access restrictions
+    PermitUserEnvironment: 'no'
+
+#
+# Misc configuration
+#
+catena_ssh_server_misc:
+  name: 40-Misc
+  description: Misc configuration
+  options:
+    # Disable server-side compression after the user has authenticated successfully
+    Compression: 'no'
+    # Disable reverse dns lookups
+    UseDNS: 'no'
+    # Disable printing of MOTD and Banner
+    # Do not give informations to end users
+    PrintMotd: 'no'
+    Banner: none
+    # Reject keys that are explicitly blacklisted
+    RevokedKeys: /etc/ssh/revoked_keys
+
+#
+# SFTP matching configuration
+#
+catena_ssh_server_sftp:
+  name: 90-sftp
+  description: SFTP matching configuration
+  options:
+    # Override default of no subsystems
+    Subsystem: sftp internal-sftp -l INFO -f LOCAL6 -u 0027
+    # NOTE: These lines must be placed at the *end* of sshd_config
+    Match:
+      rule: Group sftponly
+      options:
+        ForceCommand: internal-sftp -l INFO -f LOCAL6 -u 0027
+        ChrootDirectory: /home/%u
+        AllowTcpForwarding: 'no'
+        AllowAgentForwarding: 'no'
+        PasswordAuthentication: 'no'
+        PermitRootLogin: 'no'
+        X11Forwarding: 'no'

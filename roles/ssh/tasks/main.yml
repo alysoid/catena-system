@@ -1,0 +1,34 @@
+---
+- ansible.builtin.include_tasks: directories.yml
+- ansible.builtin.include_tasks: cleanup.yml
+
+# TODO: Specify KDF (key derivation function) rounds like:
+# `ssh-keygen -t rsa -b 4096 -a 100 -f /etc/ssh/ssh_host_rsa_key`
+# https://github.com/ansible-collections/community.crypto/issues/449
+- name: Generate {{ catena_ssh_host_rsa_key_size }} bits RSA keypair
+  community.crypto.openssh_keypair:
+    state: present
+    type: rsa
+    size: '{{ catena_ssh_host_rsa_key_size }}'
+    path: /etc/ssh/ssh_host_rsa_key
+    owner: root
+    group: root
+    force: false
+    regenerate: partial_idempotence
+  notify: Restart sshd
+
+- name: Check if /etc/ssh/moduli contains weak DH parameters
+  ansible.builtin.shell: awk '$5 < {{ catena_ssh_host_rsa_key_size }}' /etc/ssh/moduli
+  register: sshd_register_moduli
+  changed_when: false
+  check_mode: false
+
+- name: Remove small prime numbers in /etc/ssh/moduli
+  ansible.builtin.shell: |
+    awk '$5 >= {{ catena_ssh_host_rsa_key_size }}' /etc/ssh/moduli > /etc/ssh/moduli.safe;
+    mv /etc/ssh/moduli.safe /etc/ssh/moduli
+  notify: Restart sshd
+  when: sshd_register_moduli.stdout
+
+- ansible.builtin.include_tasks: client.yml
+- ansible.builtin.include_tasks: server.yml
