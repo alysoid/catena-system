@@ -1,0 +1,6 @@
+---
+# Set sysctl configuration files
+catena_sysctl: []
+
+# Remove all existing configuration files when true
+catena_sysctl_cleanup: false

@@ -1,0 +1,25 @@
+---
+- name: Check existing configuration files
+  ansible.builtin.find:
+    paths: /etc/sysctl.d
+    patterns: '*.conf'
+  when: catena_sysctl_cleanup
+  register: existing_config
+
+- name: Remove existing configuration files
+  ansible.builtin.file:
+    path: '{{ item.path }}'
+    state: absent
+  loop: '{{ existing_config.files }}'
+  when: catena_sysctl_cleanup
+  notify: Restart systemd-sysctl
+
+- name: Generate configuration files
+  ansible.builtin.template:
+    src: sysctl.conf.j2
+    dest: '/etc/sysctl.d/{{ item.name }}.conf'
+    owner: root
+    group: root
+    mode: '0644'
+  loop: '{{ catena_sysctl }}'
+  notify: Restart systemd-sysctl

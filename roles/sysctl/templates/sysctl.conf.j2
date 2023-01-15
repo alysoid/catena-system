@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+# See sysctl.conf(5) for details.
+
+{% for token, value in item.options.items() %}
+{{ token }} = {{ value }}
+{% endfor %}
