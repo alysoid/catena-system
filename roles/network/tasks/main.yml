@@ -1,0 +1,54 @@
+---
+- name: Check existing configuration files
+  ansible.builtin.find:
+    paths: /etc/systemd/network
+    patterns: '*.network,*.netdev,*.link'
+  when: catena_network_cleanup
+  register: existing_config
+
+- name: Remove existing configuration files
+  ansible.builtin.file:
+    path: '{{ item.path }}'
+    state: absent
+  loop: '{{ existing_config.files }}'
+  when: catena_network_cleanup
+  notify: Restart systemd-networkd
+
+- name: Generate .network configuration files
+  ansible.builtin.template:
+    src: networkd_config.j2
+    dest: '/etc/systemd/network/{{ item.name }}.network'
+    owner: root
+    group: systemd-network
+    mode: '0640'
+  vars:
+    current_item: '{{ item.options }}'
+    current_type: systemd.network
+  loop: '{{ catena_network }}'
+  notify: Restart systemd-networkd
+
+- name: Generate .netdev configuration files
+  ansible.builtin.template:
+    src: networkd_config.j2
+    dest: '/etc/systemd/network/{{ item.name }}.netdev'
+    owner: root
+    group: systemd-network
+    mode: '0640'
+  vars:
+    current_item: '{{ item.options }}'
+    current_type: systemd.netdev
+  loop: '{{ catena_network_netdev }}'
+  notify: Restart systemd-networkd
+
+- name: Generate .link configuration files
+  ansible.builtin.template:
+    src: networkd_config.j2
+    dest: '/etc/systemd/network/{{ item.name }}.link'
+    owner: root
+    group: systemd-network
+    mode: '0640'
+  vars:
+    current_item: '{{ item.options }}'
+    current_type: systemd.link
+  loop: '{{ catena_network_link }}'
+  notify: Restart systemd-networkd

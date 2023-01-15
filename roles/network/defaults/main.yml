@@ -1,0 +1,15 @@
+---
+# Network configuration files
+# https://man.archlinux.org/man/systemd.network.5
+catena_network: []
+
+# Virtual Network Device configuration files
+# https://man.archlinux.org/man/systemd.netdev.5
+catena_network_netdev: []
+
+# Network device configuration files
+# https://man.archlinux.org/man/systemd.link.5
+catena_network_link: []
+
+# Remove all existing configuration files when true
+catena_network_cleanup: false
