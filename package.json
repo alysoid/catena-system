@@ -1,0 +1,23 @@
+{
+  "name": "catena",
+  "version": "1.0.0",
+  "description": "Build, deploy and manage Arch Linux systems via Ansible",
+  "scripts": {
+    "format": "prettier --check --write .",
+    "prepare": "husky install"
+  },
+  "keywords": [
+    "archlinux",
+    "systemd",
+    "ansible"
+  ],
+  "author": "Andrea Brandi",
+  "license": "ISC",
+  "devDependencies": {
+    "@commitlint/cli": "^17.4.2",
+    "@commitlint/config-conventional": "^17.4.2",
+    "husky": "^8.0.3",
+    "prettier": "^2.8.3",
+    "pretty-quick": "^3.1.3"
+  }
+}

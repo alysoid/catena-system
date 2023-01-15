@@ -1,0 +1,13 @@
+### Visual Studio Code ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+### Node ###
+# Dependencies
+node_modules/
+package-lock.json
+pnpm-lock.yaml

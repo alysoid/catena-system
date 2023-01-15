@@ -1,0 +1,32 @@
+---
+namespace: catena
+name: system
+version: 1.0.0
+readme: README.md
+
+authors:
+  - andrea brandi <git@andreabrandi.com>
+
+description: Ansible Collection for managing Arch Linux systems
+
+license:
+  - ISC
+
+license_file: 'LICENSE'
+
+tags:
+  - archlinux
+  - systemd
+  - server
+  - podman
+
+dependencies:
+  community.general: '>=6.1.0'
+
+repository: https://gitlab.com/alysoid/catena-system
+documentation: https://gitlab.com/alysoid/catena-system
+issues: https://gitlab.com/alysoid/catena-system/issues
+homepage: https://andreabrandi.com
+
+build_ignore:
+  - tests
