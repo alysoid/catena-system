@@ -1,0 +1,21 @@
+galaxy_info:
+  author: Andrea Brandi
+  description: your role description
+  license: MIT
+
+  min_ansible_version: '2.1'
+
+  platforms:
+    - name: ArchLinux
+      versions:
+        - all
+
+  galaxy_tags:
+    - archlinux
+    - filesystem
+    - networking
+    - system
+    - nfs
+    - nfsv4
+
+dependencies: []

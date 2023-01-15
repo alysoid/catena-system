@@ -1,0 +1,15 @@
+---
+# When using NFSv4, the nfs root directory is specified by the entry
+# denoted by fsid=0, other directories must be below it.
+# The rootdir option in the /etc/nfs.conf file has no effect on this.
+catena_nfs_exports_root:
+  - name: NFSv4 root
+    path: /srv/nfs
+    options: 192.168.0.0/24(rw,sync,crossmnt,fsid=0)
+
+# List of custom NFS exports. Eg:
+# catena_nfs_exports:
+#   - name: My directory
+#     path: /srv/nfs/mydir
+#     options: 192.168.0.0/24(rw,async)
+catena_nfs_exports: []

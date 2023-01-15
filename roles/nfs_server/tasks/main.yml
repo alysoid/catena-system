@@ -1,0 +1,25 @@
+---
+- name: Create /etc/exports.d directory
+  become: true
+  ansible.builtin.file:
+    path: /etc/exports.d
+    state: directory
+    owner: root
+    mode: '0755'
+
+- name: Generate NFS exports
+  become: true
+  ansible.builtin.template:
+    src: nfs_exports.j2
+    dest: '/etc/exports.d/{{ catena_nfs_exports_filename }}'
+    owner: root
+    mode: '0644'
+  loop: '{{ catena_nfs_exports_root + catena_nfs_exports }}'
+  when: catena_nfs_exports is defined
+  notify: Restart nfs-server.service
+
+- name: Enable nfs-server.service
+  become: true
+  ansible.builtin.systemd:
+    name: nfs-server.service
+    enabled: true
