@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+# See {{ current_type }}(5) for details.
+
+{% for section, settings in current_options.items() %}
+[{{ section }}]
+{% for key, value in settings.items() %}
+{{ key }}={{ value }}
+{% endfor %}
+
+{% endfor %}

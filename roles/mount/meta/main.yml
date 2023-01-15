@@ -1,0 +1,20 @@
+---
+galaxy_info:
+  author: Andrea Brandi
+  description: Manage mount points via systemd.mount - Mount unit configuration
+  license: ISC
+
+  min_ansible_version: '2.1'
+
+  platforms:
+    - name: ArchLinux
+      versions:
+        - all
+
+  galaxy_tags:
+    - system
+    - systemd
+    - mount
+    - fstab
+
+dependencies: []

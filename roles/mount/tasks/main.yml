@@ -1,0 +1,24 @@
+---
+- name: Generate systemd unit for mounts
+  ansible.builtin.template:
+    src: catena_mount.j2
+    dest: '/etc/systemd/system/{{ catena_mount_filename }}'
+    owner: root
+    mode: '0644'
+  vars:
+    current_options: '{{ catena_mount_options }}'
+    current_type: systemd.mount
+  loop: '{{ catena_mount }}'
+  notify: Enable systemd mount
+
+- name: Generate systemd unit for automounts
+  ansible.builtin.template:
+    src: mount.j2
+    dest: '/etc/systemd/system/{{ catena_automount_filename }}'
+    owner: root
+    mode: '0644'
+  vars:
+    current_options: '{{ catena_automount_options }}'
+    current_type: systemd.automount
+  loop: '{{ catena_automount }}'
+  notify: Enable systemd automount

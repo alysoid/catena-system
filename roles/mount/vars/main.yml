@@ -1,0 +1,18 @@
+---
+# Define default mount options
+catena_mount_options_defaults:
+  Unit:
+    Description: 'Mount {{ item.name }}'
+
+# Define default automount options
+catena_automount_options_defaults:
+  Unit:
+    Description: 'Automount {{ item.name }}'
+
+# Combine default values with user defined settings
+catena_mount_options: '{{ catena_mount_options_defaults | combine(item.options | default({})) }}'
+catena_automount_options: '{{ catena_automount_options_defaults | combine(item.options | default({})) }}'
+
+# Generate unit filename for mounts and automounts
+catena_mount_filename: "{{ item.options.Mount.Where[1:] | replace('/', '-') }}.mount"
+catena_automount_filename: "{{ item.options.Automount.Where[1:] | replace('/', '-') }}.automount"

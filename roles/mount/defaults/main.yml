@@ -1,0 +1,8 @@
+---
+# Manage mount points with systemd.mount
+# https://man.archlinux.org/man/systemd.mount.5
+catena_mount: []
+
+# Manage automount points with systemd.automount
+# https://man.archlinux.org/man/systemd.automount.5
+catena_automount: []

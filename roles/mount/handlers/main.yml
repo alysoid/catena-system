@@ -1,0 +1,23 @@
+---
+- name: Reload systemd configuration
+  ansible.builtin.command: systemctl daemon-reload
+
+- name: Enable systemd mount
+  ansible.builtin.command: systemctl enable "{{ catena_mount_filename }}"
+  loop: '{{ catena_mount }}'
+  notify: Start systemd mount
+
+- name: Start systemd mount
+  ansible.builtin.command: systemctl start "{{ catena_mount_filename }}"
+  loop: '{{ catena_mount }}'
+  notify: Reload systemd configuration
+
+- name: Enable systemd automount
+  ansible.builtin.command: systemctl enable "{{ catena_automount_filename }}"
+  loop: '{{ catena_automount }}'
+  notify: Start systemd automount
+
+- name: Start systemd automount
+  ansible.builtin.command: systemctl start "{{ catena_automount_filename }}"
+  loop: '{{ catena_automount }}'
+  notify: Reload systemd configuration
