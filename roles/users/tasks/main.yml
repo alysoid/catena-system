@@ -1,0 +1,30 @@
+---
+- name: Manage system groups for '{{ inventory_hostname }}'
+  ansible.builtin.group:
+    name: '{{ item.name }}'
+    gid: '{{ item.gid | default(omit) }}'
+    state: "{{ item.state | default('present') }}"
+  when: catena_groups
+  loop: '{{ catena_groups }}'
+
+- name: Manage system users for '{{ inventory_hostname }}'
+  ansible.builtin.user:
+    name: '{{ item.username }}'
+    password: '{{ item.password }}'
+    comment: '{{ item.comment | default(omit) }}'
+    groups: '{{ item.groups | default(omit) }}'
+    shell: '{{ item.shell | default(omit) }}'
+    append: "{{ item.append | default('no') }}"
+    remove: "{{ item.remove | default('no') }}"
+    state: "{{ item.state | default('present') }}"
+  loop: '{{ catena_users }}'
+
+- name: Manage SSH authorized keys
+  include_tasks: keys.yml
+  vars:
+    username: '{{ current_user.username }}'
+    keys: '{{ current_user.authorized_keys }}'
+  when: current_user.authorized_keys
+  loop: '{{ catena_users }}'
+  loop_control:
+    loop_var: current_user
