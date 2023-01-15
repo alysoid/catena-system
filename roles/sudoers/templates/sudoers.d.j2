@@ -1,0 +1,13 @@
+# {{ ansible_managed }}
+# See sudoers(5) for details.
+
+{% if item.desc is defined and item.desc | length %}
+# {{ item.desc }}
+{% endif %}
+{% if item.user is defined %}
+{{ item.user }} ALL={{ '(' + runas + ')' if runas }}{{ 'NOPASSWD:' if nopasswd }} {{ commands }}
+{% elif item.group is defined %}
+%{{ item.group }} ALL={{ '(' + runas + ')' if runas }}{{ 'NOPASSWD:' if nopasswd }} {{ commands }}
+{% else %}
+{{ commands }}
+{% endif %}

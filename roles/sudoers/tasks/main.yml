@@ -1,0 +1,36 @@
+---
+- name: Create /etc/sudoers.d directory
+  ansible.builtin.file:
+    path: /etc/sudoers.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0750'
+
+- name: Check existing configuration files
+  ansible.builtin.find:
+    path: /etc/sudoers.d
+    excludes: '*.*,*~'
+  register: existing_config
+  when: catena_sudoers_cleanup
+
+- name: Remove existing configuration files
+  ansible.builtin.file:
+    path: '{{ item.path }}'
+    state: absent
+  loop: '{{ existing_config.files }}'
+  when: catena_sudoers_cleanup
+
+- name: Generate and validate configuration files
+  ansible.builtin.template:
+    src: sudoers.d.j2
+    dest: '/etc/sudoers.d/{{ item.name }}'
+    owner: root
+    group: root
+    mode: '0440'
+    validate: /usr/sbin/visudo -csf %s
+  vars:
+    runas: "{{ item.runas | default('') }}"
+    nopasswd: "{{ item.nopasswd | default(' ') }}"
+    commands: "{{ item.commands | join(', ') }}"
+  loop: '{{ catena_sudoers }}'

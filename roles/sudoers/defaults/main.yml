@@ -1,0 +1,6 @@
+---
+# List of sudoers configuration files
+catena_sudoers: []
+
+# Remove all existing configuration files when true
+catena_sudoers_cleanup: false
