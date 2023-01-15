@@ -1,0 +1,9 @@
+---
+- name: Bootstrap Arch Live CD
+  ansible.builtin.include_tasks: archiso.yml
+  when: ansible_fqdn == 'archiso'
+  tags: [archiso]
+
+- name: Bootstrap Arch Linux system
+  ansible.builtin.include_tasks: system.yml
+  when: ansible_fqdn != 'archiso'

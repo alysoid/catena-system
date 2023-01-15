@@ -1,0 +1,41 @@
+---
+- name: Set timezone to {{ catena_timezone }}
+  community.general.timezone:
+    name: '{{ catena_timezone }}'
+
+- name: Set hostname via systemd
+  ansible.builtin.hostname:
+    name: '{{ catena_hostname }}'
+    use: systemd
+
+- name: Inject hostname and aliases to hosts file
+  ansible.builtin.template:
+    src: hosts.j2
+    dest: /etc/hosts
+
+- name: Generate locale for '{{ catena_lang }}'
+  ansible.builtin.locale_gen:
+    name: '{{ catena_lang }}'
+    state: present
+
+- name: Check localectl status
+  ansible.builtin.command: localectl status
+  register: localectl_status
+  changed_when: false
+  check_mode: false
+
+- name: Get current system settings
+  ansible.builtin.set_fact:
+    keymap_current: "{{ localectl_status.stdout | regex_search('VC Keymap: ([^\n]+)', '\\1') | first }}"
+    lang_current: "{{ localectl_status.stdout | regex_search('LANG=([^\n]+)', '\\1') | first }}"
+    language_current: "{{ localectl_status.stdout | regex_search('LANGUAGE=([^\n]+)', '\\1') | default([locale], true) | first }}"
+  vars:
+    locale: '{{ catena_lang }}'
+
+- name: Set LANG to '{{ catena_lang }}', LANGUAGE to '{{ catena_language }}'
+  ansible.builtin.command: localectl set-locale LANG={{ catena_lang }} LANGUAGE={{ catena_language }}
+  when: lang_current != catena_lang or language_current != catena_language
+
+- name: Set keyboard layout
+  ansible.builtin.command: localectl set-keymap --no-convert {{ catena_keymap }}
+  when: keymap_current != catena_keymap
