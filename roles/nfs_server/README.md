@@ -1,6 +1,6 @@
 # [catena.system](https://gitlab.com/alysoid/catena-system).nfs_server
 
-Manage list of [NFS exports](https://man.archlinux.org/man/exports.5) via Ansible. Custom exports are placed in `/etc/exports.d/*.exports`, the global configuration file `/etc/nfs.conf` is untouched. For mounting check the [ansible-systemd-mount](https://github.com/alysoid/ansible-systemd-mount/) role.
+Manage list of [NFS exports](https://man.archlinux.org/man/exports.5) via Ansible. Custom exports are placed in `/etc/exports.d/*.exports`, the global configuration file `/etc/nfs.conf` is untouched. For mounting check the [catena.system.mount](https://gitlab.com/alysoid/catena-system/-/tree/main/roles/mount) role.
 
 ## Role Variables
 
