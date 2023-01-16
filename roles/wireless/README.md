@@ -2,7 +2,7 @@
 
 Manage system wireless network via [iwd](https://man.archlinux.org/man/iwd.8.en) (iNet wireless daemon), a daemon for managing Wireless devices on Linux. iwd can work in standalone mode or in combination with comprehensive network managers like systemd-networkd. This Ansible role works well with [catena.system.network](https://gitlab.com/alysoid/catena-system/-/tree/main/roles/network) that uses systemd-networkd to manage system network, and [catena.system.resolved](https://gitlab.com/alysoid/catena-system/-/tree/main/roles/resolve) that manages system DNS resolver with systemd-resolved.
 
-## Role default variables
+## Role variables
 
 ### `catena_iwd_conf`
 

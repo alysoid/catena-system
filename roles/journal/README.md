@@ -18,7 +18,7 @@ catena_journal:
     options:
       Storage: persistent
       SystemMaxUse: 100M
-      SystemMaxFilesize: 100M
+      SystemMaxFileSize: 100M
       SystemKeepFree: 50M
 ```
 
