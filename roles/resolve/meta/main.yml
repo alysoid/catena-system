@@ -2,7 +2,7 @@
 galaxy_info:
   author: Andrea Brandi
   description: Manage system DNS resolver with systemd using systemd-resolved
-  license: MIT
+  license: ISC
 
   min_ansible_version: '2.1'
 

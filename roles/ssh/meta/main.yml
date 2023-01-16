@@ -2,7 +2,7 @@
 galaxy_info:
   author: Andrea Brandi
   description: Secured and hardened OpenSSH client and server (sshd)
-  license: MIT
+  license: ISC
 
   min_ansible_version: '2.10'
 

@@ -2,7 +2,7 @@
 galaxy_info:
   author: Andrea Brandi
   description: Manage system network with systemd using systemd-networkd
-  license: MIT
+  license: ISC
 
   min_ansible_version: '2.1'
 

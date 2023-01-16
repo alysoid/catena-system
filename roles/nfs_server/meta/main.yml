@@ -1,7 +1,7 @@
 galaxy_info:
   author: Andrea Brandi
   description: your role description
-  license: MIT
+  license: ISC
 
   min_ansible_version: '2.1'
 
