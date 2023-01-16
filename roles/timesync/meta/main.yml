@@ -1,0 +1,22 @@
+---
+galaxy_info:
+  author: Andrea Brandi
+  description: Manage a simple SNTP client with systemd using systemd-timesyncd
+  license: ISC
+
+  min_ansible_version: '2.1'
+
+  platforms:
+    - name: ArchLinux
+      versions:
+        - all
+
+  galaxy_tags:
+    - system
+    - timesync
+    - timesyncd
+    - timedatectl
+    - sntp
+    - ntp
+
+dependencies: []

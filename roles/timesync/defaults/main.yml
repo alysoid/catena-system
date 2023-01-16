@@ -1,0 +1,6 @@
+---
+# If `yes`, removes all existing configuration files from `/etc/systemd/resolved.conf.d/*.conf`.
+catena_timesync_cleanup: no
+
+# Generate `/etc/systemd/resolved.conf.d/*.conf` configuration files.
+catena_timesync: []

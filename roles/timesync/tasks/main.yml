@@ -1,0 +1,56 @@
+---
+- name: Generate timesyncd.conf file
+  ansible.builtin.template:
+    src: timesyncd.conf.j2
+    dest: /etc/systemd/timesyncd.conf
+    owner: root
+    mode: '0644'
+  notify: Restart systemd-timesyncd
+
+- name: Create timesyncd.conf.d directory
+  ansible.builtin.file:
+    path: /etc/systemd/timesyncd.conf.d
+    state: directory
+    owner: root
+    mode: '0755'
+
+- name: Check existing configuration files
+  ansible.builtin.find:
+    paths: /etc/systemd/timesyncd.conf.d
+    patterns: '*.conf'
+  when: catena_timesync_cleanup
+  register: existing_config
+  check_mode: false
+
+- name: Remove existing configuration files
+  ansible.builtin.file:
+    path: '{{ item.path }}'
+    state: absent
+  loop: '{{ existing_config.files }}'
+  when: catena_timesync_cleanup
+  notify: Restart systemd-timesyncd
+
+- name: Generate configuration files
+  ansible.builtin.template:
+    src: timesyncd.conf.d.j2
+    dest: '/etc/systemd/timesyncd.conf.d/{{ item.name }}.conf'
+    owner: root
+    mode: '0644'
+  vars:
+    current_item: '{{ item.options }}'
+  loop: '{{ catena_timesync }}'
+  notify: Restart systemd-timesyncd
+
+- name: Check timedatectl status
+  ansible.builtin.command: timedatectl show
+  register: timedatectl_current
+  changed_when: false
+  check_mode: false
+
+- name: Get current SNTP service status
+  ansible.builtin.set_fact:
+    ntp_service: "{{ timedatectl_current.stdout | regex_search('\nNTP=([^\n]+)', '\\1') | first }}"
+
+- name: Enable SNTP service
+  ansible.builtin.command: timedatectl set-ntp true
+  when: ntp_service != true
