@@ -1,0 +1,6 @@
+---
+# Control local DNS and LLMNR name resolution
+catena_resolve: []
+
+# Remove all existing configuration files when true
+catena_resolve_cleanup: false
