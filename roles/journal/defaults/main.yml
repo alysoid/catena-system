@@ -1,0 +1,6 @@
+---
+# Set configuration files that control systemd-journal
+catena_journal: []
+
+# Remove all existing configuration files when true
+catena_journal_cleanup: false

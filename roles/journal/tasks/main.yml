@@ -1,0 +1,33 @@
+---
+- name: Create journald.conf.d directory
+  ansible.builtin.file:
+    path: /etc/systemd/journald.conf.d
+    state: directory
+    owner: root
+    mode: '0755'
+
+- name: Check existing configuration files
+  ansible.builtin.find:
+    paths: /etc/systemd/journald.conf.d
+    patterns: '*.conf'
+  when: catena_journal_cleanup
+  register: existing_config
+
+- name: Remove existing configuration files
+  ansible.builtin.file:
+    path: '{{ item.path }}'
+    state: absent
+  loop: '{{ existing_config.files }}'
+  when: catena_journal_cleanup
+  notify: Restart systemd-journald
+
+- name: Generate journal configuration files
+  ansible.builtin.template:
+    src: journald_config.j2
+    dest: '/etc/systemd/journald.conf.d/{{ item.name }}.conf'
+    owner: root
+    mode: '0644'
+  vars:
+    current_item: '{{ item.options }}'
+  loop: '{{ catena_journal }}'
+  notify: Restart systemd-journald
