@@ -1,0 +1,74 @@
+---
+- name: Create /etc/iwd directory
+  ansible.builtin.file:
+    path: /etc/iwd
+    state: directory
+    owner: root
+    mode: '0755'
+
+- name: Create systemd service directory for iwd
+  ansible.builtin.file:
+    path: /etc/systemd/system/iwd.service.d
+    state: directory
+    owner: root
+    mode: '0755'
+
+- name: Generate iwd service override file
+  ansible.builtin.template:
+    src: iwd_override.j2
+    dest: /etc/systemd/system/iwd.service.d/override.conf
+    owner: root
+    mode: '0644'
+  notify: iwd daemon-reload
+
+- name: Check existing configuration files
+  ansible.builtin.find:
+    paths: /etc/iwd
+    patterns: '*.conf'
+  when: catena_iwd_conf_cleanup
+  register: existing_config
+
+- name: Remove existing configuration files
+  ansible.builtin.file:
+    path: '{{ item.path }}'
+    state: absent
+  loop: '{{ existing_config.files }}'
+  when: catena_iwd_conf_cleanup
+  notify: Restart iwd
+
+- name: Generate iwd configuration files
+  ansible.builtin.template:
+    src: iwd_conf.j2
+    dest: '/etc/iwd/{{ item.name }}.conf'
+    owner: root
+    mode: '0644'
+  vars:
+    current_item: '{{ item.options }}'
+  loop: '{{ catena_iwd_conf }}'
+  notify: Restart iwd
+
+- name: Check existing network files
+  ansible.builtin.find:
+    paths: /var/lib/iwd
+    patterns: '*.open,*.psk,*.8021x'
+  when: catena_iwd_network_cleanup
+  register: existing_network
+
+- name: Remove existing network files
+  ansible.builtin.file:
+    path: '{{ item.path }}'
+    state: absent
+  loop: '{{ existing_network.files }}'
+  when: catena_iwd_network_cleanup
+  notify: Restart iwd
+
+- name: Generate iwd network files
+  ansible.builtin.template:
+    src: iwd_network.j2
+    dest: '/var/lib/iwd/{{ item.name }}'
+    owner: root
+    mode: '0600'
+  vars:
+    current_item: '{{ item.options }}'
+  loop: '{{ catena_iwd_network }}'
+  notify: Restart iwd

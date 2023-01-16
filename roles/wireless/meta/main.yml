@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  author: Andrea Brandi
+  description: Manage system wireless network with iwd (iNet wireless daemon)
+  license: ISC
+
+  min_ansible_version: '2.1'
+
+  platforms:
+    - name: ArchLinux
+      versions:
+        - all
+
+  galaxy_tags:
+    - system
+    - network
+    - deamon
+    - wireless
+    - wifi
+    - wlan
+    - iwd
+
+dependencies: []

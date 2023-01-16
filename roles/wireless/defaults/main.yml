@@ -1,0 +1,12 @@
+---
+# Define `main.conf` configuration file
+catena_iwd_conf: []
+
+# Define wireless configuration files for networks
+catena_iwd_network: []
+
+# Remove all existing iwd configuration files when true
+catena_iwd_conf_cleanup: false
+
+# Remove all existing iwd network configuration files when true
+catena_iwd_network_cleanup: false
