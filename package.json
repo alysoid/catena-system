@@ -3,8 +3,14 @@
   "version": "1.0.0",
   "description": "Build, deploy and manage Arch Linux systems via Ansible",
   "scripts": {
+    "commit": "git-cz",
     "format": "prettier --check --write .",
     "prepare": "husky install"
+  },
+  "config": {
+    "commitizen": {
+      "path": "@commitlint/cz-commitlint"
+    }
   },
   "keywords": [
     "archlinux",
@@ -16,7 +22,10 @@
   "devDependencies": {
     "@commitlint/cli": "^17.4.2",
     "@commitlint/config-conventional": "^17.4.2",
+    "@commitlint/cz-commitlint": "^17.4.2",
+    "commitizen": "^4.2.6",
     "husky": "^8.0.3",
+    "inquirer": "8",
     "prettier": "^2.8.3",
     "pretty-quick": "^3.1.3"
   }
