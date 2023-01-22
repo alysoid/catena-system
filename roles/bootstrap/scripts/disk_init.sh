@@ -5,8 +5,8 @@
 
 # Disk settings
 root_device=$1
-boot_partition="$11"
-root_partition="$12"
+boot_partition="$1p1"
+root_partition="$1p2"
 mountpoint="/mnt"
 btrfs_opts="defaults,noatime,ssd,discard=async,compress=zstd:3"
 swapfile_size="2000" # Size in MiB
@@ -75,3 +75,5 @@ mount -o subvol=@swap,$btrfs_opts $root_partition $mountpoint/swap
 
 # Enable swapfile with swapon
 swapon $mountpoint/swap/swapfile
+
+exit 0
