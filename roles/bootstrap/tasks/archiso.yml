@@ -52,7 +52,7 @@
   tags: archiso
 
 - name: Set hostname in /etc/hostname
-  ansible.builtin.shell: arch-chroot /mnt sh -c 'echo "{{ bootstrap_hostname }}" > /etc/hostname'
+  ansible.builtin.shell: arch-chroot /mnt sh -c 'echo "{{ catena_hostname }}" > /etc/hostname'
   tags: archiso
 
 # Configure the bootloader
