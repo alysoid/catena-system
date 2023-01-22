@@ -1,7 +1,7 @@
 ---
 - name: Generate systemd unit for mounts
   ansible.builtin.template:
-    src: catena_mount.j2
+    src: mount.j2
     dest: '/etc/systemd/system/{{ catena_mount_filename }}'
     owner: root
     mode: '0644'
